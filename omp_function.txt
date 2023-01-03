@@ -1,0 +1,44 @@
+void omp_function(int length, int nthreads)
+{
+	/* The code for threaded computation */
+	
+
+    int i,j;
+	
+	for (i=0; i<=length; i++) 
+       {
+		S[i] = B[i];
+
+		if (0 != S[i])
+			D[i] = 1;
+		else
+			D[i] = 0;
+	}
+        
+
+    for (j=0; j<=log2(length); j++) 
+    {	
+        omp_set_num_threads(nthreads);
+        #pragma omp parallel for
+		for (i=1; i<=length; i++) 
+        {		
+			if (S[i] != S[S[i]]) {
+				newD[i] = D[i] + D[S[i]];
+				newS[i] = S[S[i]];
+			} else {
+				newD[i] = D[i];
+				newS[i] = S[i];
+			}	
+	}
+        
+
+        #pragma omp parallel for
+        for (i=1; i<=length; i++) 
+        {
+			S[i] = newS[i];
+			D[i] = newD[i];
+	}
+        
+   }
+	
+}
